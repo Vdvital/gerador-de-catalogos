@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Crie catálogos profissionais automaticamente com planilhas e fotos de produtos." />
+  <title>CatálogoPro — Gerador de Catálogos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" defer></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <a class="brand" href="#dashboard" aria-label="CatálogoPro">
+        <span class="brand-mark">C</span><span>Catálogo<span>Pro</span></span>
+      </a>
+      <nav class="nav" aria-label="Menu principal">
+        <button class="nav-item active" data-view="dashboard"><span>⌂</span> Visão geral</button>
+        <button class="nav-item" data-view="builder"><span>＋</span> Novo catálogo</button>
+        <button class="nav-item" data-view="history"><span>▤</span> Meus catálogos</button>
+        <button class="nav-item" data-view="plans"><span>◇</span> Planos</button>
+        <button class="nav-item" data-view="admin"><span>⚙</span> Administração</button>
+      </nav>
+      <div class="sidebar-footer">
+        <div class="mini-plan"><small>PLANO ATUAL</small><strong>Pro Plus</strong><span>2 de 5 usados</span></div>
+        <button class="profile"><span class="avatar">MV</span><span><strong>Marcos Vital</strong><small>Administrador</small></span></button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <button id="menuToggle" class="icon-button mobile-only" aria-label="Abrir menu">☰</button>
+        <div><h1 id="pageTitle">Visão geral</h1><p id="pageSubtitle">Acompanhe seus catálogos e crie novos projetos.</p></div>
+        <div class="top-actions"><button class="icon-button" title="Notificações">○</button><button class="button primary" data-go="builder">＋ Criar catálogo</button></div>
+      </header>
+
+      <section id="dashboard" class="view active-view">
+        <div class="welcome-card">
+          <div><span class="eyebrow">BEM-VINDO DE VOLTA</span><h2>Transforme produtos em catálogos profissionais.</h2><p>Envie sua planilha e suas fotos. Nós organizamos, diagramamos e geramos o PDF.</p><button class="button white" data-go="builder">Começar agora →</button></div>
+          <div class="cover-stack"><div class="cover back"></div><div class="cover front"><small>CATÁLOGO</small><strong>2026</strong><span>coleção essencial</span></div></div>
+        </div>
+        <div class="stats-grid">
+          <article class="stat-card"><span class="stat-icon blue">▤</span><div><small>CATÁLOGOS GERADOS</small><strong id="catalogCount">0</strong><span>Neste navegador</span></div></article>
+          <article class="stat-card"><span class="stat-icon green">✓</span><div><small>GERAÇÕES DISPONÍVEIS</small><strong>3</strong><span>Renova na segunda-feira</span></div></article>
+          <article class="stat-card"><span class="stat-icon orange">◷</span><div><small>RASCUNHO</small><strong id="draftCount">0</strong><span>Continue de onde parou</span></div></article>
+          <article class="stat-card"><span class="stat-icon purple">◈</span><div><small>PLANO</small><strong class="plan-name">Pro Plus</strong><span>Todos os recursos</span></div></article>
+        </div>
+        <div class="section-head"><div><h2>Catálogos recentes</h2><p>Seus últimos projetos gerados.</p></div><button class="text-button" data-go="history">Ver todos →</button></div>
+        <div id="recentCatalogs" class="catalog-list empty-state"><div class="empty-icon">▤</div><h3>Nenhum catálogo gerado</h3><p>Seu primeiro catálogo aparecerá aqui.</p></div>
+      </section>
+
+      <section id="builder" class="view">
+        <div class="steps" aria-label="Etapas do catálogo">
+          <button class="step active" data-step="1"><span>1</span><small>Informações</small></button>
+          <i></i><button class="step" data-step="2"><span>2</span><small>Produtos</small></button>
+          <i></i><button class="step" data-step="3"><span>3</span><small>Design</small></button>
+          <i></i><button class="step" data-step="4"><span>4</span><small>Prévia</small></button>
+        </div>
+
+        <div class="builder-grid">
+          <div class="panel wizard-panel">
+            <div class="wizard-step active" data-panel="1">
+              <span class="eyebrow">ETAPA 1 DE 4</span><h2>Informações do catálogo</h2><p>Defina os dados principais do projeto.</p>
+              <div class="form-grid">
+                <label class="full">Nome do projeto<input id="projectName" value="Catálogo Geral 2026" /></label>
+                <label>Empresa<input id="companyName" value="Minha Empresa" /></label>
+                <label>Título da capa<input id="coverTitle" value="Catálogo Geral" /></label>
+                <label>WhatsApp<input id="whatsapp" placeholder="(11) 99999-9999" /></label>
+                <label>Site<input id="website" placeholder="www.suaempresa.com.br" /></label>
+                <label class="full">Logo da empresa<input id="logoInput" type="file" accept="image/png,image/jpeg,image/webp" /></label>
+              </div>
+            </div>
+
+            <div class="wizard-step" data-panel="2">
+              <span class="eyebrow">ETAPA 2 DE 4</span><h2>Planilha e imagens</h2><p>Os nomes das imagens devem ser iguais aos códigos da planilha.</p>
+              <div class="upload-grid">
+                <label class="dropzone"><span class="upload-icon">⇧</span><strong>Enviar planilha</strong><small>XLSX, XLS ou CSV</small><input id="sheetInput" type="file" accept=".xlsx,.xls,.csv" /></label>
+                <label class="dropzone"><span class="upload-icon">▧</span><strong>Enviar fotos ou ZIP</strong><small>JPG, PNG, WEBP ou ZIP</small><input id="imagesInput" type="file" accept="image/jpeg,image/png,image/webp,.zip" multiple /></label>
+              </div>
+              <div id="uploadStatus" class="status-box hidden"></div>
+              <div id="validationSummary" class="validation-grid hidden"></div>
+              <div id="productTableWrap" class="table-wrap hidden"><table><thead><tr><th>Código</th><th>Produto</th><th>Categoria</th><th>Valor</th><th>Foto</th></tr></thead><tbody id="productTable"></tbody></table></div>
+            </div>
+
+            <div class="wizard-step" data-panel="3">
+              <span class="eyebrow">ETAPA 3 DE 4</span><h2>Personalização</h2><p>Escolha o visual e os campos do catálogo.</p>
+              <div class="form-grid">
+                <label>Modelo<select id="template"><option value="modern">Moderno</option><option value="minimal">Minimalista</option><option value="kids">Infantil</option><option value="tools">Ferramentas</option></select></label>
+                <label>Produtos por página<select id="perPage"><option>1</option><option>2</option><option selected>4</option><option>6</option></select></label>
+                <label>Cor principal<input id="primaryColor" type="color" value="#112f4a" /></label>
+                <label>Cor de destaque<input id="accentColor" type="color" value="#1687e8" /></label>
+                <label class="check-label"><input id="groupCategory" type="checkbox" checked /> Separar por categoria</label>
+                <label class="check-label"><input id="showPrice" type="checkbox" checked /> Mostrar preços</label>
+                <label class="check-label"><input id="showDescription" type="checkbox" checked /> Mostrar descrições</label>
+                <label class="check-label"><input id="showCode" type="checkbox" checked /> Mostrar códigos</label>
+              </div>
+              <div class="theme-preview"><span></span><span></span><span></span><div><strong>Prévia de cores</strong><small>As cores serão aplicadas ao PDF.</small></div></div>
+            </div>
+
+            <div class="wizard-step" data-panel="4">
+              <span class="eyebrow">ETAPA 4 DE 4</span><h2>Revise seu catálogo</h2><p>Confira as páginas antes de gerar o PDF.</p>
+              <div class="final-actions"><button id="saveDraft" class="button secondary">Salvar rascunho</button><button id="generatePdf" class="button primary">Gerar PDF</button></div>
+              <div id="generationStatus" class="status-box hidden"></div>
+            </div>
+            <footer class="wizard-footer"><button id="prevStep" class="button ghost" disabled>← Voltar</button><button id="nextStep" class="button primary">Continuar →</button></footer>
+          </div>
+          <aside class="preview-panel"><div class="preview-toolbar"><strong>Pré-visualização</strong><span id="previewPages">1 página</span></div><div id="catalogPreview" class="catalog-preview"></div></aside>
+        </div>
+      </section>
+
+      <section id="history" class="view"><div class="section-head"><div><h2>Meus catálogos</h2><p>Projetos salvos e PDFs gerados neste navegador.</p></div></div><div id="historyList" class="history-grid"></div></section>
+
+      <section id="plans" class="view"><div class="section-head"><div><h2>Planos</h2><p>Escolha os recursos ideais para sua operação.</p></div></div><div class="plans-grid">
+        <article class="price-card"><h3>Médio</h3><div class="price"><sup>R$</sup>1.300</div><p>2 catálogos por semana</p><ul><li>Catálogo simples</li><li>Modelos básicos</li><li>Download em PDF</li></ul><button class="button secondary">Escolher Médio</button></article>
+        <article class="price-card"><span class="popular">MAIS ESCOLHIDO</span><h3>Pro</h3><div class="price"><sup>R$</sup>2.350</div><p>2 catálogos por mês</p><ul><li>Separação por categoria</li><li>Capa personalizada</li><li>Logo e cores</li></ul><button class="button primary">Escolher Pro</button></article>
+        <article class="price-card featured"><h3>Pro Plus</h3><div class="price"><sup>R$</sup>3.500</div><p>5 catálogos por semana</p><ul><li>Todos os recursos</li><li>Índice automático</li><li>Histórico completo</li></ul><button class="button dark">Plano atual</button></article>
+      </div></section>
+
+      <section id="admin" class="view"><div class="section-head"><div><h2>Painel administrativo</h2><p>Resumo inicial de usuários, planos e geração.</p></div></div><div class="stats-grid"><article class="stat-card"><span class="stat-icon blue">♙</span><div><small>USUÁRIOS</small><strong>1</strong><span>Conta administradora</span></div></article><article class="stat-card"><span class="stat-icon green">R$</span><div><small>VALOR A RECEBER</small><strong class="money">R$ 0</strong><span>Integração pendente</span></div></article><article class="stat-card"><span class="stat-icon orange">▤</span><div><small>CATÁLOGOS</small><strong id="adminCatalogCount">0</strong><span>Gerados localmente</span></div></article></div><div class="panel admin-note"><h3>Configuração de produção</h3><p>Para liberar usuários reais e pagamentos, conecte Supabase e Mercado Pago/Asaas no backend. Nunca coloque chaves secretas no navegador ou no repositório.</p></div></section>
+    </main>
+  </div>
+  <div id="toast" class="toast" role="status"></div>
+</body>
+</html>
+
