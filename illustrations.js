@@ -255,4 +255,8 @@
   installIllustrationStyles();
   if (state.products.length) renderCategoryCoverEditor();
   renderPreview();
+
+  const layoutScript = document.createElement('script');
+  layoutScript.src = 'illustration-layout-3.js?v=20260916-1';
+  document.head.appendChild(layoutScript);
 })();
