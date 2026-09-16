@@ -53,8 +53,6 @@
       .illustrated-product-page.illustration-left .page-illustration{left:0;top:0;width:var(--illustration-width);height:100%;border-radius:0 0 78px 0}
       .illustrated-product-page.illustration-right .illustration-content{width:calc(100% - var(--illustration-width));padding:24px 14px 18px 22px;margin-right:auto}
       .illustrated-product-page.illustration-left .illustration-content{width:calc(100% - var(--illustration-width));padding:24px 22px 18px 14px;margin-left:var(--illustration-width)}
-      .illustrated-product-page.illustration-right:before,.illustrated-product-page.illustration-left:before{content:"";position:absolute;z-index:4;top:22px;left:-42px;width:520px;height:64px;border-top:11px solid var(--catalog-accent);border-radius:50%;transform:rotate(-7deg);pointer-events:none}
-      .illustrated-product-page.illustration-left:before{transform:rotate(7deg);left:-20px}
       .illustrated-product-page.illustration-right .page-header,.illustrated-product-page.illustration-left .page-header{margin-bottom:9px;padding-bottom:7px;position:relative;z-index:5}
       .illustrated-product-page.illustration-right .page-header h3,.illustrated-product-page.illustration-left .page-header h3{font-size:17px;line-height:1.05}
       .illustrated-product-page.illustration-right .page-header small,.illustrated-product-page.illustration-left .page-header small{display:none}
